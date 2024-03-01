@@ -1,0 +1,9 @@
+export const primary = "#4AC8F0";
+export const secondary = "#FFFFFF";
+export const light = "#FFFFFF";
+export const dark = "#000000";
+export const textColor = "#363636";
+export const darkGray = "#7D7D7D";
+export const lightBlue = "#F2F9FF";
+export const dividerColor = "#D4ECF3";
+export const highlightedGray = "#F8F8F8";
