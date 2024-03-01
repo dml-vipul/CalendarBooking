@@ -1,4 +1,4 @@
 import GetStartedScreen from "./GetStarted/GetStartedScreen";
-import HomeScreen from "./dashBoard/HomeScreen";
+import HomeScreen from "./DashBoard/HomeScreen";
 
 export { GetStartedScreen, HomeScreen };
