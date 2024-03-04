@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import {
   FlatList,
   ScrollView,
@@ -21,9 +21,10 @@ import {
 } from "../../theme";
 import CustomButton from "../../components/atoms/customButton";
 import FastImage from "react-native-fast-image";
-import { dateArrowLeft, dateArrowRight } from "../../utils/icons";
+import { addEvent, dateArrowLeft, dateArrowRight } from "../../utils/icons";
 
 interface Week {
+  [x: string]: ReactNode;
   start: string;
   end: string;
   dates: number[];
@@ -33,14 +34,23 @@ interface Week {
 const HomeScreen = () => {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [weeks, setWeeks] = useState<Week[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [selectedItem, setSelectedItem] = useState<null | Week>(null);
 
-  const handleNextMonth = () => {
-    setCurrentMonth(currentMonth.add(1, "month"));
-  };
+  const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, "month"));
 
-  const handlePrevMonth = () => {
+  const handlePrevMonth = () =>
     setCurrentMonth(currentMonth.subtract(1, "month"));
+
+  const handleCustomSelection = (item: Week, index: number) => {
+    setSelectedItem(item);
+    setSelectedIndex(index);
   };
+
+  useEffect(() => {
+    handleCustomSelection(weeks[selectedIndex], selectedIndex);
+  }, [weeks]);
+
   function GetWeeksInMonth(
     year: number,
     month: number
@@ -73,6 +83,7 @@ const HomeScreen = () => {
           end: `${weekEnd} ${monthName}`,
           dates: currentWeek,
           dayNames: currentWeekDayNames,
+          monthName: monthName,
         });
         currentWeek = [];
         currentWeekDayNames = [];
@@ -83,8 +94,6 @@ const HomeScreen = () => {
     return weeks;
   }
 
-  // console.log(weeks);
-
   useEffect(() => {
     console.log(currentMonth.format("MM"));
     const weeksInMonth = GetWeeksInMonth(
@@ -94,13 +103,18 @@ const HomeScreen = () => {
     setWeeks(weeksInMonth);
   }, [currentMonth]);
 
-  const renderWeekItem = ({ item }: { item: Week }) => (
-    <TouchableOpacity style={styles.scrollHeader}>
+  const renderWeekItem = ({ item, index }: { item: Week; index: number }) => (
+    <TouchableOpacity
+      style={styles.scrollHeader}
+      onPress={() => handleCustomSelection(item, index)}
+    >
       <Text style={styles.scrollDates}>
         {item?.dates?.length > 1 && `${item.start} -`} {item.end}
       </Text>
     </TouchableOpacity>
   );
+
+  console.log(weeks[0]);
   return (
     <Container style={styles.mainContainer}>
       <View style={styles.appHeaderContainer}>
@@ -150,12 +164,60 @@ const HomeScreen = () => {
           />
         </TouchableOpacity>
       </View>
-      <FlatList
-        data={weeks}
-        renderItem={renderWeekItem}
-        horizontal={true}
-        keyExtractor={(item, index) => index.toString()}
-      />
+      <View>
+        <FlatList
+          data={weeks}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderWeekItem}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
+      {selectedItem ? (
+        <View style={styles.rowContainer}>
+          {selectedItem?.dates?.map((date, index) => (
+            <TouchableOpacity style={styles.eventContainer} key={index}>
+              <Text key={index} style={styles.eventDates}>
+                {date} {selectedItem?.dayNames[index]}/{selectedItem?.monthName}
+              </Text>
+              <View style={styles.eventDivider} />
+              <View style={styles.eventDescription}>
+                <Text style={styles.eventTitle}>-</Text>
+              </View>
+              <View style={styles.eventDivider} />
+              <TouchableOpacity>
+                <FastImage
+                  source={addEvent}
+                  style={styles.IconStyle}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            </TouchableOpacity>
+          ))}
+        </View>
+      ) : (
+        <View style={styles.rowContainer}>
+          {weeks[0]?.dates?.map((date, index) => (
+            <View style={styles.eventContainer} key={index}>
+              <Text key={index} style={styles.eventDates}>
+                {date} {weeks[0]?.dayNames[index]}/{weeks[0]?.monthName}
+              </Text>
+              <View style={styles.eventDivider} />
+              <View style={styles.eventDescription}>
+                <Text style={styles.eventTitle}>-</Text>
+              </View>
+              <View style={styles.eventDivider} />
+              <TouchableOpacity>
+                <FastImage
+                  source={addEvent}
+                  style={styles.IconStyle}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      )}
     </Container>
   );
 };
@@ -235,8 +297,40 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(8),
   },
   scrollHeader: {
-    height: moderateScale(50),
+    height: moderateScale(40),
     marginHorizontal: moderateScale(10),
     marginVertical: moderateScale(10),
+  },
+  rowContainer: {
+    paddingHorizontal: verticalScale(10),
+  },
+  eventDates: {
+    flex: 0.4,
+    fontSize: moderateScale(12),
+    fontFamily: fonts.poppinsRegular,
+    color: colors.dark,
+  },
+  eventContainer: {
+    backgroundColor: colors.highlightedGray,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    margin: moderateScale(2),
+    padding: horizontalScale(6),
+    borderRadius: moderateScale(8),
+  },
+  eventDivider: {
+    height: moderateScale(40),
+    borderColor: colors.dividerColor,
+    borderWidth: moderateScale(0.4),
+    marginHorizontal: horizontalScale(10),
+  },
+  eventDescription: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  eventTitle: {
+    color: colors.dark,
   },
 });

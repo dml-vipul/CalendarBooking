@@ -7,11 +7,15 @@ import {
   ViewStyle,
 } from "react-native";
 import React, { memo } from "react";
-import { colors, fonts, horizontalScale, moderateScale } from "../../../theme";
-import { font16Px } from "../../../theme/typography";
+import {
+  colors,
+  fonts,
+  horizontalScale,
+  moderateScale,
+  typography,
+} from "../../../theme";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Feather";
-import { getSelectedTheme } from "../../../helpers/commonTheme";
 
 interface AppBackHeaderProps {
   title?: string;
@@ -25,9 +29,7 @@ const AppBackHeader: React.FC<AppBackHeaderProps> = ({
   containerStyle,
 }) => {
   const navigation = useNavigation();
-  const selectedTheme = getSelectedTheme();
 
-  const styles = generateStyles(selectedTheme);
   return (
     <View style={[styles.headerContainer, containerStyle]}>
       {backButton && (
@@ -40,7 +42,7 @@ const AppBackHeader: React.FC<AppBackHeaderProps> = ({
           <Icon
             name="chevron-left"
             size={moderateScale(30)}
-            color={selectedTheme.textColor}
+            color={colors.dark}
           />
         </TouchableOpacity>
       )}
@@ -49,25 +51,23 @@ const AppBackHeader: React.FC<AppBackHeaderProps> = ({
   );
 };
 
-const generateStyles = (selectedTheme: any) =>
-  StyleSheet.create({
-    headerContainer: {
-      flexDirection: "row",
-      height: moderateScale(90),
-      paddingTop: moderateScale(20),
-      backgroundColor: selectedTheme.themeColor,
-    },
-    headerTitle: {
-      flex: 1,
-      fontSize: font16Px,
-      color: selectedTheme.textColor,
-      fontFamily: fonts.semiBold,
-      textAlign: "center",
-      paddingRight: horizontalScale(20),
-    },
-    backIcon: {
-      paddingLeft: moderateScale(10),
-    },
-  });
+const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: "row",
+    paddingTop: moderateScale(20),
+    backgroundColor: colors.light,
+    alignItems: "center",
+  },
+  headerTitle: {
+    flex: 1,
+    fontSize: typography.font18Px,
+    color: colors.dark,
+    fontFamily: fonts.poppinsRegular,
+    paddingLeft: horizontalScale(10),
+  },
+  backIcon: {
+    paddingLeft: moderateScale(10),
+  },
+});
 
 export default memo(AppBackHeader);

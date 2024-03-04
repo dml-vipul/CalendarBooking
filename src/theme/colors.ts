@@ -7,3 +7,7 @@ export const darkGray = "#7D7D7D";
 export const lightBlue = "#F2F9FF";
 export const dividerColor = "#D4ECF3";
 export const highlightedGray = "#F8F8F8";
+export const borderGray = "#F1F1F1";
+export const lightRed = "#FC5555";
+export const grey = "#666666";
+export const linkBlue = "#516C8C";

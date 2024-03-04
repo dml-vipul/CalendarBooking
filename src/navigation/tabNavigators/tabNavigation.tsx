@@ -13,6 +13,7 @@ import {
 import { HomeScreen } from "../../screens";
 import EventScreen from "../../screens/Event/EventScreen";
 import ProfileScreen from "../../screens/Profile/ProfileScreen";
+import ProfileStackNavigation from "../stackNavigators/ProfileStackNavigation";
 
 const TabStack = createBottomTabNavigator();
 const TabNavigation = () => {
@@ -57,7 +58,7 @@ const TabNavigation = () => {
     >
       <TabStack.Screen name="Home" component={HomeScreen} />
       <TabStack.Screen name="Event" component={EventScreen} />
-      <TabStack.Screen name="Profile" component={ProfileScreen} />
+      <TabStack.Screen name="Profile" component={ProfileStackNavigation} />
     </TabStack.Navigator>
   );
 };
