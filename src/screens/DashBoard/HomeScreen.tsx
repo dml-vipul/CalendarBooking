@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import {
   FlatList,
   ScrollView,
@@ -22,6 +22,9 @@ import {
 import CustomButton from "../../components/atoms/customButton";
 import FastImage from "react-native-fast-image";
 import { addEvent, dateArrowLeft, dateArrowRight } from "../../utils/icons";
+import BottomSheet from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheet/BottomSheet";
+import CustomBottomSheet from "../../components/molecules/BottomModal/BottomModal";
+import CalendarHeader from "../../components/atoms/CalendarHeader";
 
 interface Week {
   [x: string]: ReactNode;
@@ -36,6 +39,12 @@ const HomeScreen = () => {
   const [weeks, setWeeks] = useState<Week[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<null | Week>(null);
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const [title, setTitle] = useState("Passing my data 🔥");
+
+  const handleClosePress = () => bottomSheetRef.current?.close();
+  const handleOpenPress = () => bottomSheetRef.current?.expand();
 
   const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, "month"));
 
@@ -114,7 +123,6 @@ const HomeScreen = () => {
     </TouchableOpacity>
   );
 
-  console.log(weeks[0]);
   return (
     <Container style={styles.mainContainer}>
       <View style={styles.appHeaderContainer}>
@@ -145,25 +153,11 @@ const HomeScreen = () => {
           />
         </View>
       </View>
-      <View style={styles.calendarHeader}>
-        <TouchableOpacity onPress={handlePrevMonth}>
-          <FastImage
-            source={dateArrowLeft}
-            resizeMode="contain"
-            style={styles.IconStyle}
-          />
-        </TouchableOpacity>
-        <Text style={styles.subHeading}>
-          {currentMonth.format("MMM")} {currentMonth.format("YYYY")}
-        </Text>
-        <TouchableOpacity onPress={handleNextMonth}>
-          <FastImage
-            source={dateArrowRight}
-            resizeMode="contain"
-            style={styles.IconStyle}
-          />
-        </TouchableOpacity>
-      </View>
+      <CalendarHeader
+        currentMonth={currentMonth}
+        handleNextMonth={handleNextMonth}
+        handlePrevMonth={handlePrevMonth}
+      />
       <View>
         <FlatList
           data={weeks}
@@ -176,7 +170,7 @@ const HomeScreen = () => {
       {selectedItem ? (
         <View style={styles.rowContainer}>
           {selectedItem?.dates?.map((date, index) => (
-            <TouchableOpacity style={styles.eventContainer} key={index}>
+            <View style={styles.eventContainer} key={index}>
               <Text key={index} style={styles.eventDates}>
                 {date} {selectedItem?.dayNames[index]}/{selectedItem?.monthName}
               </Text>
@@ -185,14 +179,14 @@ const HomeScreen = () => {
                 <Text style={styles.eventTitle}>-</Text>
               </View>
               <View style={styles.eventDivider} />
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handleOpenPress}>
                 <FastImage
                   source={addEvent}
                   style={styles.IconStyle}
                   resizeMode="contain"
                 />
               </TouchableOpacity>
-            </TouchableOpacity>
+            </View>
           ))}
         </View>
       ) : (
@@ -218,6 +212,7 @@ const HomeScreen = () => {
           ))}
         </View>
       )}
+      <CustomBottomSheet ref={bottomSheetRef} title={title} />
     </Container>
   );
 };

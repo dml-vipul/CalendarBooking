@@ -12,3 +12,6 @@ export const addEvent: ImageRequireSource = require("../assets/icons/add-event/A
 export const cameraIcon: ImageRequireSource = require("../assets/icons/camera/camera-01.png");
 export const editIcon: ImageRequireSource = require("../assets/icons/edit/Vector.png");
 export const circleIcon: ImageRequireSource = require("../assets/icons/circle/circle.png");
+export const onlineIcon: ImageRequireSource = require("../assets/icons/event/online/Vector.png");
+export const offlineIcon: ImageRequireSource = require("../assets/icons/event/offline/Vector.png");
+export const dropdownIcon: ImageRequireSource = require("../assets/icons/dropdown/Polygon.png");

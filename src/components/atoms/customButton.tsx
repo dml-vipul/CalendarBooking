@@ -14,10 +14,12 @@ import Icon from "react-native-vector-icons/Feather";
 import {
   colors,
   fonts,
+  horizontalScale,
   moderateScale,
   typography,
   verticalScale,
 } from "../../theme";
+import FastImage from "react-native-fast-image";
 
 interface CustomButtonProps {
   onPress: () => void | undefined;
@@ -25,6 +27,8 @@ interface CustomButtonProps {
   icon?: boolean;
   buttonStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  imageStyle?: object;
+  image?: ImageRequireSource;
 }
 const CustomButton: React.FC<CustomButtonProps> = ({
   onPress = () => {},
@@ -32,6 +36,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   icon = false,
   buttonStyle,
   textStyle,
+  imageStyle,
+  image,
 }) => {
   return (
     <TouchableOpacity
@@ -45,6 +51,15 @@ const CustomButton: React.FC<CustomButtonProps> = ({
             name="chevron-right"
             size={moderateScale(15)}
             color={colors.light}
+          />
+        </View>
+      )}
+      {image && (
+        <View style={{ paddingLeft: horizontalScale(10) }}>
+          <FastImage
+            source={image}
+            resizeMode="contain"
+            style={[styles.ImageStyle, imageStyle]}
           />
         </View>
       )}
@@ -62,8 +77,12 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     fontSize: typography.font16Px,
-    color: colors.light,
+    color: colors.dark,
     fontFamily: fonts.regular,
+  },
+  ImageStyle: {
+    width: moderateScale(20),
+    height: moderateScale(20),
   },
 });
 
