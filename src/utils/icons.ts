@@ -15,3 +15,5 @@ export const circleIcon: ImageRequireSource = require("../assets/icons/circle/ci
 export const onlineIcon: ImageRequireSource = require("../assets/icons/event/online/Vector.png");
 export const offlineIcon: ImageRequireSource = require("../assets/icons/event/offline/Vector.png");
 export const dropdownIcon: ImageRequireSource = require("../assets/icons/dropdown/Polygon.png");
+export const checkCircle: ImageRequireSource = require("../assets/icons/checkCircle/circle.png");
+export const searchIcon: ImageRequireSource = require("../assets/icons/search/Vector.png");

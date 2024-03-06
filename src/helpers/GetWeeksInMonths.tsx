@@ -1,12 +1,30 @@
-export function GetWeeksInMonth(
-  year: number,
-  month: number
-): { start: string; end: string; dates: number[]; dayNames: string[] }[] {
+import { ReactNode } from "react";
+
+interface WeekProps {
+  year?: number;
+  month?: number;
+}
+
+interface Week {
+  [x: string]: ReactNode;
+  start: string;
+  end: string;
+  dates: number[];
+  dayNames: string[];
+}
+
+function GetWeeksInMonth(year: number, month: number): Week[] {
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const weeks = [];
   const firstDate = new Date(year, month - 1, 1);
   const lastDate = new Date(year, month, 0);
   const numDays = lastDate.getDate();
+
+  console.log(numDays);
+
+  const monthName = new Intl.DateTimeFormat("en", { month: "short" })
+    .format(firstDate)
+    .toLowerCase();
 
   let dayOfWeekCounter = firstDate.getDay();
   let currentWeek = [];
@@ -20,10 +38,11 @@ export function GetWeeksInMonth(
     if (currentWeek.length === 7 || date === numDays) {
       const weekEnd = date;
       weeks.push({
-        start: `${weekStart}mar-${weekEnd}mar`,
-        end: `${weekEnd}mar`,
+        start: `${weekStart} ${monthName}`,
+        end: `${weekEnd} ${monthName}`,
         dates: currentWeek,
         dayNames: currentWeekDayNames,
+        monthName: monthName,
       });
       currentWeek = [];
       currentWeekDayNames = [];
@@ -33,3 +52,5 @@ export function GetWeeksInMonth(
 
   return weeks;
 }
+
+export default GetWeeksInMonth;

@@ -1,9 +1,14 @@
 import {
+  ImageRequireSource,
+  StyleProp,
   StyleSheet,
   Text,
   TextInput,
+  TextStyle,
   TouchableOpacity,
   View,
+  ViewProps,
+  ViewStyle,
 } from "react-native";
 import React, { memo } from "react";
 import {
@@ -14,15 +19,17 @@ import {
   verticalScale,
 } from "../../theme";
 import { font14Px } from "../../theme/typography";
-import { getSelectedTheme } from "../../helpers/commonTheme";
+import FastImage from "react-native-fast-image";
 
 interface SearchHeaderProps {
   placeholder?: string | undefined;
   value?: string | undefined;
   onChangeText?: ((text: string) => void) | undefined;
-  leftIcon?: JSX.Element;
+  leftIcon?: ImageRequireSource;
   rightIcon?: JSX.Element;
   rightOnPress?: (() => void) | undefined;
+  containerStyle?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 }
 const CustomSearchField: React.FC<SearchHeaderProps> = ({
   placeholder,
@@ -31,18 +38,22 @@ const CustomSearchField: React.FC<SearchHeaderProps> = ({
   leftIcon,
   rightIcon,
   rightOnPress,
+  containerStyle,
+  textStyle,
 }) => {
-  const selectedTheme = getSelectedTheme();
-  const styles = generateStyles(selectedTheme);
   return (
-    <View style={styles.container}>
-      <View style={styles.iconContainer}>{leftIcon}</View>
+    <View style={[styles.container, containerStyle]}>
+      <FastImage
+        source={leftIcon}
+        style={styles.iconContainer}
+        resizeMode="contain"
+      />
       <TextInput
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
-        placeholderTextColor={selectedTheme.placeholderColor}
-        style={styles.inputStyle}
+        placeholderTextColor={colors.dark}
+        style={[styles.inputStyle, textStyle]}
       />
       {rightIcon && (
         <TouchableOpacity style={styles.rightIcon} onPress={rightOnPress}>
@@ -55,28 +66,28 @@ const CustomSearchField: React.FC<SearchHeaderProps> = ({
 
 export default memo(CustomSearchField);
 
-const generateStyles = (selectedTheme: any) =>
-  StyleSheet.create({
-    container: {
-      flexDirection: "row",
-      alignItems: "center",
-      flex: 1,
-      height: moderateScale(50),
-      borderWidth: 1,
-      borderColor: selectedTheme.lightGray,
-      backgroundColor: selectedTheme.themeColor,
-      borderRadius: moderateScale(10),
-      paddingHorizontal: moderateScale(8),
-    },
-    inputStyle: {
-      flex: 1,
-      color: selectedTheme.textColor,
-      paddingHorizontal: moderateScale(12),
-      fontSize: font14Px,
-      fontFamily: fonts.semiBold,
-    },
-    iconContainer: {
-      paddingLeft: horizontalScale(5),
-    },
-    rightIcon: {},
-  });
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: moderateScale(50),
+    borderWidth: 1,
+    borderColor: colors.borderGray,
+    backgroundColor: colors.light,
+    borderRadius: moderateScale(10),
+    paddingHorizontal: moderateScale(8),
+  },
+  inputStyle: {
+    flex: 1,
+    color: colors.textColor,
+    paddingHorizontal: moderateScale(12),
+    fontSize: font14Px,
+    fontFamily: fonts.semiBold,
+  },
+  iconContainer: {
+    paddingLeft: horizontalScale(5),
+    width: moderateScale(20),
+    height: moderateScale(20),
+  },
+  rightIcon: {},
+});

@@ -25,6 +25,7 @@ import { addEvent, dateArrowLeft, dateArrowRight } from "../../utils/icons";
 import BottomSheet from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheet/BottomSheet";
 import CustomBottomSheet from "../../components/molecules/BottomModal/BottomModal";
 import CalendarHeader from "../../components/atoms/CalendarHeader";
+import GetWeeksInMonth from "../../helpers/GetWeeksInMonths";
 
 interface Week {
   [x: string]: ReactNode;
@@ -39,12 +40,19 @@ const HomeScreen = () => {
   const [weeks, setWeeks] = useState<Week[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [selectedItem, setSelectedItem] = useState<null | Week>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [title, setTitle] = useState("Passing my data 🔥");
 
-  const handleClosePress = () => bottomSheetRef.current?.close();
-  const handleOpenPress = () => bottomSheetRef.current?.expand();
+  const handleClosePress = () => {
+    setShowModal(false);
+    bottomSheetRef.current?.close();
+  };
+  const handleOpenPress = () => {
+    bottomSheetRef.current?.expand();
+    setShowModal(true);
+  };
 
   const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, "month"));
 
@@ -60,51 +68,50 @@ const HomeScreen = () => {
     handleCustomSelection(weeks[selectedIndex], selectedIndex);
   }, [weeks]);
 
-  function GetWeeksInMonth(
-    year: number,
-    month: number
-  ): { start: string; end: string; dates: number[]; dayNames: string[] }[] {
-    const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const weeks = [];
-    const firstDate = new Date(year, month - 1, 1);
-    const lastDate = new Date(year, month, 0);
-    const numDays = lastDate.getDate();
+  // function GetWeeksInMonth(
+  //   year: number,
+  //   month: number
+  // ): { start: string; end: string; dates: number[]; dayNames: string[] }[] {
+  //   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  //   const weeks = [];
+  //   const firstDate = new Date(year, month - 1, 1);
+  //   const lastDate = new Date(year, month, 0);
+  //   const numDays = lastDate.getDate();
 
-    console.log(numDays);
+  //   console.log(numDays);
 
-    const monthName = new Intl.DateTimeFormat("en", { month: "short" })
-      .format(firstDate)
-      .toLowerCase();
+  //   const monthName = new Intl.DateTimeFormat("en", { month: "short" })
+  //     .format(firstDate)
+  //     .toLowerCase();
 
-    let dayOfWeekCounter = firstDate.getDay();
-    let currentWeek = [];
-    let currentWeekDayNames = [];
-    let weekStart = 1;
+  //   let dayOfWeekCounter = firstDate.getDay();
+  //   let currentWeek = [];
+  //   let currentWeekDayNames = [];
+  //   let weekStart = 1;
 
-    for (let date = 1; date <= numDays; date++) {
-      currentWeek.push(date);
-      currentWeekDayNames.push(daysOfWeek[(dayOfWeekCounter + date - 1) % 7]);
+  //   for (let date = 1; date <= numDays; date++) {
+  //     currentWeek.push(date);
+  //     currentWeekDayNames.push(daysOfWeek[(dayOfWeekCounter + date - 1) % 7]);
 
-      if (currentWeek.length === 7 || date === numDays) {
-        const weekEnd = date;
-        weeks.push({
-          start: `${weekStart} ${monthName}`,
-          end: `${weekEnd} ${monthName}`,
-          dates: currentWeek,
-          dayNames: currentWeekDayNames,
-          monthName: monthName,
-        });
-        currentWeek = [];
-        currentWeekDayNames = [];
-        weekStart = date + 1;
-      }
-    }
+  //     if (currentWeek.length === 7 || date === numDays) {
+  //       const weekEnd = date;
+  //       weeks.push({
+  //         start: `${weekStart} ${monthName}`,
+  //         end: `${weekEnd} ${monthName}`,
+  //         dates: currentWeek,
+  //         dayNames: currentWeekDayNames,
+  //         monthName: monthName,
+  //       });
+  //       currentWeek = [];
+  //       currentWeekDayNames = [];
+  //       weekStart = date + 1;
+  //     }
+  //   }
 
-    return weeks;
-  }
+  //   return weeks;
+  // }
 
   useEffect(() => {
-    console.log(currentMonth.format("MM"));
     const weeksInMonth = GetWeeksInMonth(
       parseInt(currentMonth.format("YYYY")),
       parseInt(currentMonth.format("MM"))
@@ -124,7 +131,12 @@ const HomeScreen = () => {
   );
 
   return (
-    <Container style={styles.mainContainer}>
+    <Container
+      style={[
+        styles.mainContainer,
+        showModal && { backgroundColor: "rgba(0,0,0,0.5)" },
+      ]}
+    >
       <View style={styles.appHeaderContainer}>
         <AppHeader
           title="Hi, Divit !"
@@ -212,7 +224,11 @@ const HomeScreen = () => {
           ))}
         </View>
       )}
-      <CustomBottomSheet ref={bottomSheetRef} title={title} />
+      <CustomBottomSheet
+        ref={bottomSheetRef}
+        title={title}
+        handleClosePress={handleClosePress}
+      />
     </Container>
   );
 };
