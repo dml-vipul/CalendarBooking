@@ -11,3 +11,4 @@ export const lightRed = "#FC5555";
 export const grey = "#666666";
 export const linkBlue = "#516C8C";
 export const textColor = "#8B8B8B";
+export const meetingLink = "#146183";

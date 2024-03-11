@@ -54,7 +54,6 @@ const AppBackHeader: React.FC<AppBackHeaderProps> = ({
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: "row",
-    paddingTop: moderateScale(20),
     backgroundColor: colors.light,
     alignItems: "center",
   },

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import Container from "../../components/atoms/container";
 import AppBackHeader from "../../components/organisms/appHeader/AppBackHeader";
@@ -16,7 +16,7 @@ import { circleIcon } from "../../utils/icons";
 const NotificationScreen = () => {
   return (
     <Container style={styles.container}>
-      <View style={{ paddingTop: verticalScale(20) }}>
+      <View style={{ paddingTop: verticalScale(30) }}>
         <AppBackHeader title="Notifications" backButton={true} />
       </View>
       <Divider
@@ -44,11 +44,14 @@ const NotificationScreen = () => {
         <Divider LineStyles={styles.divider} />
         <View style={{ padding: moderateScale(10) }}>
           <Text style={styles.commonText}>Meeting with Atul</Text>
-          <Text style={styles.linkText}>
-            https://meet.google.com/mbx-jyek-deg
-          </Text>
+          <TouchableOpacity>
+            <Text style={styles.linkText}>
+              https://meet.google.com/mbx-jyek-deg
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
+
       <View style={[styles.borderStyling, styles.contentContainer]}>
         <View
           style={{
@@ -71,37 +74,11 @@ const NotificationScreen = () => {
         <Divider LineStyles={styles.divider} />
         <View style={{ padding: moderateScale(10) }}>
           <Text style={styles.commonText}>Meeting with Atul</Text>
-          <Text style={styles.commonText}>
-            <Text style={{ color: colors.grey }}>In next 30 mins</Text> at 2:00
-            PM
-          </Text>
-        </View>
-      </View>
-      <View style={[styles.borderStyling, styles.contentContainer]}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: moderateScale(8),
-          }}
-        >
-          <View style={{ flexDirection: "row" }}>
-            <FastImage
-              source={circleIcon}
-              style={styles.circleIcon}
-              resizeMode="contain"
-            />
-            <Text style={styles.headerStyle}>Reminder</Text>
-          </View>
-          <Text style={styles.subHeaderStyle}>9:00 am</Text>
-        </View>
-        <Divider LineStyles={styles.divider} />
-        <View style={{ padding: moderateScale(10) }}>
-          <Text style={styles.commonText}>Meeting with Atul</Text>
-          <Text style={styles.linkText}>
-            https://meet.google.com/mbx-jyek-deg
-          </Text>
+          <TouchableOpacity>
+            <Text style={styles.linkText}>
+              https://meet.google.com/mbx-jyek-deg
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Container>

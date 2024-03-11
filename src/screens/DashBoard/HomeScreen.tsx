@@ -137,98 +137,102 @@ const HomeScreen = () => {
         showModal && { backgroundColor: "rgba(0,0,0,0.5)" },
       ]}
     >
-      <View style={styles.appHeaderContainer}>
-        <AppHeader
-          title="Hi, Divit !"
-          profileSource={profileImage}
-          showNotification={true}
-        />
-      </View>
-      <View style={styles.subHeaderContainer}>
-        <View style={styles.subTextContainer}>
-          <View style={styles.meetingIndicator} />
-          <View>
-            <Text style={styles.heading}>Meetings</Text>
-            <Text style={styles.subHeading}>
-              Meeting at 12 pm with @Atul Goyal!{" "}
-            </Text>
-          </View>
-          <View style={styles.divider} />
-        </View>
-        <View style={{ flex: 1 }}>
-          <CustomButton
-            title="View All"
-            onPress={() => {}}
-            icon={true}
-            buttonStyle={styles.btnStyle}
-            textStyle={styles.btnTitleStyle}
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.appHeaderContainer}>
+          <AppHeader
+            title="Hi, Divit !"
+            profileSource={profileImage}
+            showNotification={true}
           />
         </View>
-      </View>
-      <CalendarHeader
-        currentMonth={currentMonth}
-        handleNextMonth={handleNextMonth}
-        handlePrevMonth={handlePrevMonth}
-      />
-      <View>
-        <FlatList
-          data={weeks}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={renderWeekItem}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
+        <View style={styles.subHeaderContainer}>
+          <View style={styles.subTextContainer}>
+            <View style={styles.meetingIndicator} />
+            <View>
+              <Text style={styles.heading}>Meetings</Text>
+              <Text style={styles.subHeading}>
+                Meeting at 12 pm with @Atul Goyal!{" "}
+              </Text>
+            </View>
+            <View style={styles.divider} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <CustomButton
+              title="View All"
+              onPress={() => {}}
+              icon={true}
+              buttonStyle={styles.btnStyle}
+              textStyle={styles.btnTitleStyle}
+            />
+          </View>
+        </View>
+        <CalendarHeader
+          currentMonth={currentMonth}
+          handleNextMonth={handleNextMonth}
+          handlePrevMonth={handlePrevMonth}
         />
-      </View>
-      {selectedItem ? (
-        <View style={styles.rowContainer}>
-          {selectedItem?.dates?.map((date, index) => (
-            <View style={styles.eventContainer} key={index}>
-              <Text key={index} style={styles.eventDates}>
-                {date} {selectedItem?.dayNames[index]}/{selectedItem?.monthName}
-              </Text>
-              <View style={styles.eventDivider} />
-              <View style={styles.eventDescription}>
-                <Text style={styles.eventTitle}>-</Text>
-              </View>
-              <View style={styles.eventDivider} />
-              <TouchableOpacity onPress={handleOpenPress}>
-                <FastImage
-                  source={addEvent}
-                  style={styles.IconStyle}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-            </View>
-          ))}
+        <View>
+          <FlatList
+            data={weeks}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={renderWeekItem}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          />
         </View>
-      ) : (
-        <View style={styles.rowContainer}>
-          {weeks[0]?.dates?.map((date, index) => (
-            <View style={styles.eventContainer} key={index}>
-              <Text key={index} style={styles.eventDates}>
-                {date} {weeks[0]?.dayNames[index]}/{weeks[0]?.monthName}
-              </Text>
-              <View style={styles.eventDivider} />
-              <View style={styles.eventDescription}>
-                <Text style={styles.eventTitle}>-</Text>
+        {selectedItem ? (
+          <View style={styles.rowContainer}>
+            {selectedItem?.dates?.map((date, index) => (
+              <View style={styles.eventContainer} key={index}>
+                <Text key={index} style={styles.eventDates}>
+                  {date} {selectedItem?.dayNames[index]}/
+                  {selectedItem?.monthName}
+                </Text>
+                <View style={styles.eventDivider} />
+                <View style={styles.eventDescription}>
+                  <Text style={styles.eventTitle}>-</Text>
+                </View>
+                <View style={styles.eventDivider} />
+                <TouchableOpacity onPress={handleOpenPress}>
+                  <FastImage
+                    source={addEvent}
+                    style={styles.IconStyle}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
               </View>
-              <View style={styles.eventDivider} />
-              <TouchableOpacity>
-                <FastImage
-                  source={addEvent}
-                  style={styles.IconStyle}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-            </View>
-          ))}
-        </View>
-      )}
-      <CustomBottomSheet
-        ref={bottomSheetRef}
-        title={title}
-        handleClosePress={handleClosePress}
-      />
+            ))}
+          </View>
+        ) : (
+          <View style={styles.rowContainer}>
+            {weeks[0]?.dates?.map((date, index) => (
+              <View style={styles.eventContainer} key={index}>
+                <Text key={index} style={styles.eventDates}>
+                  {date} {weeks[0]?.dayNames[index]}/{weeks[0]?.monthName}
+                </Text>
+                <View style={styles.eventDivider} />
+                <View style={styles.eventDescription}>
+                  <Text style={styles.eventTitle}>-</Text>
+                </View>
+                <View style={styles.eventDivider} />
+                <TouchableOpacity>
+                  <FastImage
+                    source={addEvent}
+                    style={styles.IconStyle}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        )}
+
+        <CustomBottomSheet
+          ref={bottomSheetRef}
+          title={title}
+          handleClosePress={handleClosePress}
+        />
+      </ScrollView>
     </Container>
   );
 };

@@ -19,7 +19,7 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   return (
     <Container style={styles.container}>
-      <View style={{ paddingTop: verticalScale(20) }}>
+      <View style={{ paddingTop: verticalScale(30) }}>
         <AppBackHeader title="Profile" backButton={true} />
       </View>
       <Divider
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(16),
   },
   divider: {
-    height: 2,
+    height: 1,
     backgroundColor: "#F1F1F1",
     marginVertical: moderateScale(2),
   },

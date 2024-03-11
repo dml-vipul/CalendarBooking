@@ -1,8 +1,16 @@
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  Button,
+  TouchableOpacity,
+} from "react-native";
 import React, { forwardRef, useMemo, useState } from "react";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import dayjs from "dayjs";
 import Icon from "react-native-vector-icons/Feather";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import {
   colors,
@@ -14,10 +22,15 @@ import {
 import CalendarHeader from "../../atoms/CalendarHeader";
 import Divider from "../../atoms/Divider";
 import CustomButton from "../../atoms/customButton";
-import { dropdownIcon, offlineIcon, onlineIcon } from "../../../utils/icons";
+import {
+  checkCircle,
+  dropdownIcon,
+  offlineIcon,
+  onlineIcon,
+} from "../../../utils/icons";
 import FastImage from "react-native-fast-image";
 import { poppinsSemiBold } from "../../../theme/fonts";
-import TextField from "../../atoms/textField";
+
 export type Ref = BottomSheet;
 
 interface Props {
@@ -29,10 +42,23 @@ const CustomBottomSheet = forwardRef<Ref, Props>((props, ref) => {
   const snapPoints = useMemo(() => ["90%"], []);
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [selectedEvent, setSelectedEvent] = useState<string | null>("online");
+  const [mode, setMode] = useState<string>("date");
 
-  const [title, setTitle] = useState<string | null>("");
-  const [description, setDescription] = useState<string | null>("");
-  const [meetingLink, setMeetingLink] = useState<string | null>("");
+  const [title, setTitle] = useState<string | undefined>("");
+  const [description, setDescription] = useState<string | undefined>("");
+  const [meetingLink, setMeetingLink] = useState<string | undefined>(
+    "Meet - mms-vmvn-qtd (google.com)"
+  );
+
+  const [isDatePickerVisible, setIsDatePickerVisible] =
+    useState<boolean>(false);
+  const [selectedDateType, setSelectedDateType] = useState("from");
+  const [fromDate, setFromDate] = useState(new Date());
+  const [toDate, setToDate] = useState(new Date());
+
+  const handleTitleChange = (val: string) => setTitle(val);
+  const handleDescriptionChange = (val: string) => setDescription(val);
+  const handleMeetingLinkChange = (val: string) => setMeetingLink(val);
 
   const handleSelectedEvent = (val: string) => {
     setSelectedEvent(val);
@@ -42,6 +68,77 @@ const CustomBottomSheet = forwardRef<Ref, Props>((props, ref) => {
 
   const handlePrevMonth = () =>
     setCurrentMonth(currentMonth.subtract(1, "month"));
+
+  const showDatePicker = (
+    dateType: React.SetStateAction<string>,
+    mode: React.SetStateAction<string>
+  ) => {
+    setIsDatePickerVisible(true);
+    setMode(mode);
+    setSelectedDateType(dateType);
+  };
+
+  const hideDatePicker = () => {
+    setIsDatePickerVisible(false);
+  };
+
+  const handleConfirm = (date: Date) => {
+    console.log(date, "???????????????");
+    if (selectedDateType === "from") {
+      if (mode === "date") {
+        // Extract time from previous fromDate
+        const hours = fromDate.getHours();
+        const minutes = fromDate.getMinutes();
+        const seconds = fromDate.getSeconds();
+
+        // Set the new date with preserved time
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        date.setSeconds(seconds);
+
+        setFromDate(date);
+      } else {
+        // Preserve the date when only time is being changed
+        const year = fromDate.getFullYear();
+        const month = fromDate.getMonth();
+        const day = fromDate.getDate();
+
+        // Set the new time with preserved date
+        date.setFullYear(year);
+        date.setMonth(month);
+        date.setDate(day);
+
+        setFromDate(date);
+      }
+    } else if (selectedDateType === "to") {
+      if (mode === "date") {
+        // Extract time from previous toDate
+        const hours = toDate.getHours();
+        const minutes = toDate.getMinutes();
+        const seconds = toDate.getSeconds();
+
+        // Set the new date with preserved time
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        date.setSeconds(seconds);
+
+        setToDate(date);
+      } else {
+        // Preserve the date when only time is being changed
+        const year = toDate.getFullYear();
+        const month = toDate.getMonth();
+        const day = toDate.getDate();
+
+        // Set the new time with preserved date
+        date.setFullYear(year);
+        date.setMonth(month);
+        date.setDate(day);
+
+        setToDate(date);
+      }
+    }
+    hideDatePicker();
+  };
 
   return (
     <BottomSheet
@@ -117,15 +214,13 @@ const CustomBottomSheet = forwardRef<Ref, Props>((props, ref) => {
 
           <Text style={styles.titleStyle}>Title</Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TextField placeholder="Rohit’s Bday party meet" />
-            {/* <Text
-              style={[
-                styles.subHeadingText,
-                { fontSize: moderateScale(16), flex: 1 },
-              ]}
-            >
-              Rohit’s Bday party meet{" "}
-            </Text>
+            <TextInput
+              placeholder="Rohit’s Bday party meet"
+              value={title}
+              onChangeText={handleTitleChange}
+              style={styles.inputStyle}
+              placeholderTextColor={colors.dark}
+            />
             <View style={styles.eventDivider} />
             <View style={{ paddingHorizontal: horizontalScale(10) }}>
               <FastImage
@@ -133,7 +228,7 @@ const CustomBottomSheet = forwardRef<Ref, Props>((props, ref) => {
                 style={styles.IconStyle}
                 resizeMode="contain"
               />
-            </View> */}
+            </View>
           </View>
           <Divider
             LineStyles={[
@@ -141,15 +236,17 @@ const CustomBottomSheet = forwardRef<Ref, Props>((props, ref) => {
               { marginVertical: moderateScale(5) },
             ]}
           />
-
           <Text style={styles.titleStyle}>Discription</Text>
-          <View>
-            <Text
-              style={[styles.subHeadingText, { fontSize: moderateScale(16) }]}
-            >
-              All school friends will join virtual birthday celebration, I need
-              to sing a song.
-            </Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TextInput
+              placeholder="All school friends will join virtual birthday celebration, I need to sing a song."
+              value={description}
+              onChangeText={handleDescriptionChange}
+              multiline
+              numberOfLines={2}
+              style={styles.inputStyle}
+              placeholderTextColor={colors.dark}
+            />
           </View>
           <Divider
             LineStyles={[
@@ -172,27 +269,56 @@ const CustomBottomSheet = forwardRef<Ref, Props>((props, ref) => {
               flexDirection: "row",
             }}
           >
-            <Text style={[styles.subHeadingText, styles.dateStyle]}>
-              Sun / 7 Aug{" "}
-            </Text>
+            <TouchableOpacity
+              style={styles.dateStyle}
+              onPress={() => showDatePicker("from", "date")}
+            >
+              <Text style={[styles.subHeadingText]}>
+                {fromDate.toLocaleDateString()}
+              </Text>
+            </TouchableOpacity>
 
-            <Text style={[styles.subHeadingText, styles.dateStyle]}>
-              Sun / 7 Aug{" "}
-            </Text>
+            <TouchableOpacity
+              style={styles.dateStyle}
+              onPress={() => showDatePicker("to", "date")}
+            >
+              <Text style={[styles.subHeadingText]}>
+                {toDate.toLocaleDateString()}
+              </Text>
+            </TouchableOpacity>
           </View>
+
           <View
             style={{
               flexDirection: "row",
               marginTop: verticalScale(10),
             }}
           >
-            <Text style={[styles.subHeadingText, styles.dateStyle]}>
-              8:00 pm
-            </Text>
+            <TouchableOpacity
+              style={styles.dateStyle}
+              onPress={() => showDatePicker("from", "time")}
+            >
+              <Text style={[styles.subHeadingText]}>
+                {fromDate.toLocaleTimeString()}
+              </Text>
+            </TouchableOpacity>
 
-            <Text style={[styles.subHeadingText, styles.dateStyle]}>
-              9:00 pm
-            </Text>
+            <TouchableOpacity
+              style={styles.dateStyle}
+              onPress={() => showDatePicker("to", "time")}
+            >
+              <Text style={[styles.subHeadingText]}>
+                {toDate.toLocaleTimeString()}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View>
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode={mode === "date" ? "date" : "time"}
+              onConfirm={handleConfirm}
+              onCancel={hideDatePicker}
+            />
           </View>
 
           <Text style={styles.titleStyle}>Link</Text>
@@ -200,7 +326,7 @@ const CustomBottomSheet = forwardRef<Ref, Props>((props, ref) => {
             <Text
               style={[styles.subHeadingText, { fontSize: moderateScale(16) }]}
             >
-              Meet - mms-vmvn-qtd (google.com)
+              {meetingLink}
             </Text>
           </View>
           <Divider
@@ -230,7 +356,7 @@ const CustomBottomSheet = forwardRef<Ref, Props>((props, ref) => {
             buttonStyle={{
               borderRadius: moderateScale(30),
               paddingVertical: moderateScale(5),
-              marginBottom: verticalScale(10),
+              marginVertical: verticalScale(10),
             }}
             textStyle={{ color: colors.light, fontFamily: poppinsSemiBold }}
           />
@@ -265,7 +391,7 @@ const styles = StyleSheet.create({
     color: colors.dark,
   },
   subHeadingText: {
-    fontSize: moderateScale(12),
+    fontSize: moderateScale(14),
     fontFamily: fonts.poppinsRegular,
     color: colors.dark,
   },
@@ -288,7 +414,7 @@ const styles = StyleSheet.create({
   },
   titleStyle: {
     color: colors.textColor,
-    fontSize: moderateScale(12),
+    fontSize: moderateScale(14),
     fontFamily: fonts.poppinsBold,
     paddingTop: verticalScale(10),
     paddingBottom: verticalScale(5),
@@ -308,7 +434,7 @@ const styles = StyleSheet.create({
     height: moderateScale(20),
   },
   dateStyle: {
-    flex: 2,
+    flex: 1,
     fontSize: moderateScale(16),
     borderBottomWidth: 1,
     borderBottomColor: colors.borderGray,
@@ -319,6 +445,13 @@ const styles = StyleSheet.create({
     borderColor: colors.dividerColor,
     borderWidth: moderateScale(0.4),
     marginHorizontal: horizontalScale(10),
+  },
+  inputStyle: {
+    flex: 1,
+    fontSize: moderateScale(14),
+    fontFamily: fonts.regular,
+    color: colors.dark,
+    padding: moderateScale(2),
   },
 });
 

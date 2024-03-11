@@ -13,6 +13,8 @@ import CustomSearchField from "../../components/atoms/customSearchField";
 import { colors, moderateScale, verticalScale } from "../../theme";
 import { searchIcon } from "../../utils/icons";
 import GetWeeksInMonth from "../../helpers/GetWeeksInMonths";
+import TaskContainerCard from "../../components/molecules/cards/TaskContainerCard";
+import SafeAreaContainer from "../../components/atoms/SafeAreaContainer";
 
 interface Week {
   [x: string]: ReactNode;
@@ -27,6 +29,9 @@ const EventScreen = () => {
   const [weeks, setWeeks] = useState<Week[]>([]);
 
   const [searchText, setSearchText] = useState("");
+
+  const date = new Date();
+  console.log(date.toLocaleDateString());
 
   const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, "month"));
   const handlePrevMonth = () =>
@@ -49,30 +54,33 @@ const EventScreen = () => {
   );
 
   return (
-    <Container style={styles.container}>
-      <CustomSearchField
-        placeholder="Events"
-        value={searchText}
-        onChangeText={setSearchText}
-        leftIcon={searchIcon}
-        containerStyle={styles.searchContainer}
-        textStyle={{ fontSize: moderateScale(18) }}
-      />
-      <CalendarHeader
-        currentMonth={currentMonth}
-        handleNextMonth={handleNextMonth}
-        handlePrevMonth={handlePrevMonth}
-      />
-      <View>
-        <FlatList
-          data={weeks}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={renderWeekItem}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
+    <SafeAreaContainer>
+      <Container style={styles.container}>
+        <CustomSearchField
+          placeholder="Events"
+          value={searchText}
+          onChangeText={setSearchText}
+          leftIcon={searchIcon}
+          containerStyle={styles.searchContainer}
+          textStyle={{ fontSize: moderateScale(18) }}
         />
-      </View>
-    </Container>
+        <CalendarHeader
+          currentMonth={currentMonth}
+          handleNextMonth={handleNextMonth}
+          handlePrevMonth={handlePrevMonth}
+        />
+        <View>
+          <FlatList
+            data={weeks}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={renderWeekItem}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
+        <TaskContainerCard />
+      </Container>
+    </SafeAreaContainer>
   );
 };
 
@@ -80,8 +88,8 @@ export default EventScreen;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: verticalScale(40),
     paddingHorizontal: 0,
+    paddingTop: verticalScale(20),
   },
   searchContainer: {
     flexDirection: "row",
